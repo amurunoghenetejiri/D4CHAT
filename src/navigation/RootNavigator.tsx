@@ -1,5 +1,4 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -14,7 +13,7 @@ import VerifyCodeScreen from '../screens/VerifyCodeScreen';
 import ProfileSetupScreen from '../screens/ProfileSetupScreen';
 import ChatsScreen from '../screens/ChatsScreen';
 import ConversationScreen from '../screens/ConversationScreen';
-import UpdatesScreen from '../screens/UpdatesScreen';
+import MomentsScreen from '../screens/MomentsScreen';
 import CallsScreen from '../screens/CallsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PlaceholderScreen from '../screens/PlaceholderScreen';
@@ -28,49 +27,43 @@ function MainTabs() {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarActiveTintColor: colors.gradientEnd,
-        tabBarInactiveTintColor: colors.primaryText,
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '500' },
+        tabBarInactiveTintColor: colors.tabInactive,
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
         tabBarStyle: {
           height: 60,
           paddingBottom: 6,
           paddingTop: 4,
-          borderTopColor: colors.borderChat,
+          borderTopColor: colors.border,
           borderTopWidth: 1,
+          backgroundColor: colors.white,
         },
         tabBarIcon: ({ color, focused }) => {
           const map: Record<string, keyof typeof Ionicons.glyphMap> = {
             Chats: focused ? 'chatbubbles' : 'chatbubbles-outline',
-            Updates: focused ? 'ellipse' : 'ellipse-outline',
+            Moments: focused ? 'sparkles' : 'sparkles-outline',
             Calls: focused ? 'call' : 'call-outline',
             Settings: focused ? 'settings' : 'settings-outline',
           };
-          return (
-            <View style={focused ? { backgroundColor: '#e9d5ff', borderRadius: 100, width: 60, height: 29, alignItems: 'center', justifyContent: 'center' } : undefined}>
-              <Ionicons name={map[route.name]} size={22} color={color} />
-              {route.name === 'Chats' && (
-                <View style={styles.tabBadge}><Text style={styles.tabBadgeText}>3</Text></View>
-              )}
-            </View>
-          );
+          return <Ionicons name={map[route.name]} size={22} color={color} />;
         },
       })}
     >
       <Tab.Screen name="Chats" component={ChatsScreen} />
-      <Tab.Screen name="Updates" component={UpdatesScreen} />
+      <Tab.Screen name="Moments" component={MomentsScreen} options={{ title: 'Moments' }} />
       <Tab.Screen name="Calls" component={CallsScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
 
-function SettingsSubScreen({ title, subtitle }: { title: string; subtitle: string }) {
+function Shell({ title, subtitle }: { title: string; subtitle?: string }) {
   return <PlaceholderScreen title={title} subtitle={subtitle} />;
 }
 
 export default function RootNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false, animation: 'fade' }}>
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="PhoneNumber" component={PhoneNumberScreen} />
@@ -78,20 +71,25 @@ export default function RootNavigator() {
         <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
         <Stack.Screen name="MainTabs" component={MainTabs} />
         <Stack.Screen name="Conversation" component={ConversationScreen} />
-        <Stack.Screen name="EditProfile">{() => <SettingsSubScreen title="Edit profile" subtitle="Name, photo, about" />}</Stack.Screen>
-        <Stack.Screen name="PrivacySecurity">{() => <SettingsSubScreen title="Privacy and security" subtitle="Last seen, read receipts" />}</Stack.Screen>
-        <Stack.Screen name="Notifications">{() => <SettingsSubScreen title="Notifications" subtitle="Message and call alerts" />}</Stack.Screen>
-        <Stack.Screen name="StorageData">{() => <SettingsSubScreen title="Storage and data" subtitle="Network usage, auto-download" />}</Stack.Screen>
-        <Stack.Screen name="LinkedDevices">{() => <SettingsSubScreen title="Linked devices" subtitle="Manage computers" />}</Stack.Screen>
-        <Stack.Screen name="NewChat">{() => <SettingsSubScreen title="New chat" subtitle="Contact list" />}</Stack.Screen>
-        <Stack.Screen name="CreateGroup">{() => <SettingsSubScreen title="Create group" subtitle="Select members" />}</Stack.Screen>
-        <Stack.Screen name="ArchivedChats">{() => <SettingsSubScreen title="Archived chats" subtitle="Archived conversations" />}</Stack.Screen>
+        <Stack.Screen name="PostStatus" component={() => <Shell title="New moment" subtitle="Share a moment (mock)" />} />
+        <Stack.Screen name="Account" component={() => <Shell title="Account" />} />
+        <Stack.Screen name="EditProfile" component={() => <Shell title="Edit profile" />} />
+        <Stack.Screen name="Privacy" component={() => <Shell title="Privacy" />} />
+        <Stack.Screen name="PrivacySecurity" component={() => <Shell title="Privacy and security" />} />
+        <Stack.Screen name="Notifications" component={() => <Shell title="Notifications" />} />
+        <Stack.Screen name="StorageData" component={() => <Shell title="Storage and data" />} />
+        <Stack.Screen name="LinkedDevices" component={() => <Shell title="Linked devices" />} />
+        <Stack.Screen name="NewChat" component={() => <Shell title="New chat" subtitle="Pick someone to message" />} />
+        <Stack.Screen name="NewGroup" component={() => <Shell title="New group" />} />
+        <Stack.Screen name="CreateGroup" component={() => <Shell title="Create group" />} />
+        <Stack.Screen name="Archived" component={() => <Shell title="Archived" />} />
+        <Stack.Screen name="ArchivedChats" component={() => <Shell title="Archived chats" />} />
+        <Stack.Screen name="InviteFriend" component={() => <Shell title="Invite a friend" />} />
+        <Stack.Screen name="ContactInfo" component={() => <Shell title="Contact info" />} />
+        <Stack.Screen name="VoiceCall" component={() => <Shell title="Voice call" subtitle="Mock call UI" />} />
+        <Stack.Screen name="VideoCall" component={() => <Shell title="Video call" subtitle="Mock call UI" />} />
+        <Stack.Screen name="Placeholder" component={PlaceholderScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  tabBadge: { position: 'absolute', top: -2, right: 8, backgroundColor: colors.accent, minWidth: 17, height: 17, borderRadius: 9, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 },
-  tabBadgeText: { color: '#fff', fontSize: 10, fontWeight: '600' },
-});
