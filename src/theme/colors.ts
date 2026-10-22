@@ -12,6 +12,7 @@ export const colors = {
   softStart: '#e6f7ff',
   softMid: '#dbeafe',
   softEnd: '#e9d5ff',
+  softBg: '#f2f4f3',
   searchBg: '#f2f4f3',
   inputBg: '#f2f4f3',
   white: '#ffffff',
@@ -24,4 +25,12 @@ export const colors = {
   borderChat: '#e8ebe9',
   tabInactive: '#9aa3a0',
   homeIndicator: '#17231e',
+  groupAvatarGreen: '#ddece4',
+  groupAvatarCoffee: '#e8dbcb',
+};
+
+export const radii = {
+  pill: 100,
+  card: 16,
+  avatar: 26,
 };
