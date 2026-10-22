@@ -42,12 +42,17 @@ jobs:
             || yes | "$SDK/cmdline-tools/16.0/bin/sdkmanager" --licenses >/dev/null 2>&1 \
             || true
 
+      - name: Generate D4CHAT app icons
+        run: |
+          pip install pillow -q
+          python3 scripts/generate-icons.py
+          ls -la assets/
+
       - name: Install npm dependencies
         run: npm install --legacy-peer-deps
 
       - name: Align native modules with Expo SDK
-        run: |
-          npx expo install react-native-safe-area-context react-native-screens expo-linear-gradient expo-status-bar --fix
+        run: npx expo install react-native-safe-area-context react-native-screens expo-linear-gradient expo-status-bar --fix
 
       - name: Generate native Android project
         run: npx expo prebuild --platform android --non-interactive --no-install --clean
@@ -60,11 +65,48 @@ jobs:
           SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
           echo "sdk.dir=$SDK" > android/local.properties
 
-      - name: Build debug APK
+      - name: Embed JS bundle (standalone offline APK)
+        run: |
+          mkdir -p android/app/src/main/assets
+          ENTRY="index.ts"
+          if [ ! -f "$ENTRY" ]; then ENTRY="node_modules/expo/AppEntry.js"; fi
+          npx react-native bundle \
+            --platform android \
+            --dev false \
+            --entry-file "$ENTRY" \
+            --bundle-output android/app/src/main/assets/index.android.bundle \
+            --assets-dest android/app/src/main/res \
+            --minify false \
+            --reset-cache
+          ls -lh android/app/src/main/assets/index.android.bundle
+
+      - name: Sign release with debug keystore (sideload-friendly)
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path("android/app/build.gradle")
+          if not p.exists():
+              p = Path("android/app/build.gradle.kts")
+          t = p.read_text()
+          if "signingConfig signingConfigs.debug" in t:
+              print("already patched")
+          else:
+              t2 = re.sub(
+                  r"(release\s*\{)",
+                  r"\1\n            signingConfig signingConfigs.debug",
+                  t,
+                  count=1,
+              )
+              p.write_text(t2)
+              print("patched release signingConfig")
+          PY
+
+      - name: Build release APK (embedded JS, offline)
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          ./gradlew assembleRelease --no-daemon --stacktrace
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx3g -Dorg.gradle.daemon=false"
 
@@ -78,17 +120,17 @@ jobs:
             exit 1
           fi
           ls -lh "$APK"
-          cp "$APK" D4CHAT-debug.apk
+          cp "$APK" D4CHAT.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: D4CHAT-android
-          path: D4CHAT-debug.apk
+          path: D4CHAT.apk
           if-no-files-found: error
           retention-days: 30
 
       - name: Summary
         run: |
-          echo "## D4CHAT Android APK ready" >> "$GITHUB_STEP_SUMMARY"
-          echo "Download **D4CHAT-android**, install on phone. Fully offline." >> "$GITHUB_STEP_SUMMARY"
+          echo "## D4CHAT Android APK (offline)" >> "$GITHUB_STEP_SUMMARY"
+          echo "Install D4CHAT.apk — no Metro, no internet. Logo icon included." >> "$GITHUB_STEP_SUMMARY"
