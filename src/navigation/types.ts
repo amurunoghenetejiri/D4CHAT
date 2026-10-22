@@ -5,8 +5,9 @@ export type RootStackParamList = {
   VerifyCode: { phone?: string };
   ProfileSetup: undefined;
   MainTabs: undefined;
-  Conversation: { chatId: string; name: string; isGroup?: boolean };
+  Conversation: { chatId: string; name: string; isGroup?: boolean; isYou?: boolean };
   ContactInfo: { chatId: string; name: string; isGroup?: boolean };
+  MyProfile: undefined;
   Search: undefined;
   Archived: undefined;
   NewChat: undefined;

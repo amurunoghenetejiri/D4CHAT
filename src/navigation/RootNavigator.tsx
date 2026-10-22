@@ -1,5 +1,8 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { RefObject } from 'react';
+import {
+  NavigationContainer,
+  NavigationContainerRef,
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,6 +20,7 @@ import MomentsScreen from '../screens/MomentsScreen';
 import CallsScreen from '../screens/CallsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PlaceholderScreen from '../screens/PlaceholderScreen';
+import MyProfileScreen from '../screens/MyProfileScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -60,9 +64,13 @@ function Shell({ title, subtitle }: { title: string; subtitle?: string }) {
   return <PlaceholderScreen title={title} subtitle={subtitle} />;
 }
 
-export default function RootNavigator() {
+type Props = {
+  navigationRef?: RefObject<NavigationContainerRef<RootStackParamList> | null>;
+};
+
+export default function RootNavigator({ navigationRef }: Props) {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator screenOptions={{ headerShown: false, animation: 'fade' }}>
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
@@ -71,6 +79,7 @@ export default function RootNavigator() {
         <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
         <Stack.Screen name="MainTabs" component={MainTabs} />
         <Stack.Screen name="Conversation" component={ConversationScreen} />
+        <Stack.Screen name="MyProfile" component={MyProfileScreen} />
         <Stack.Screen name="PostStatus" component={() => <Shell title="New moment" subtitle="Share a moment (mock)" />} />
         <Stack.Screen name="Account" component={() => <Shell title="Account" />} />
         <Stack.Screen name="EditProfile" component={() => <Shell title="Edit profile" />} />
@@ -86,6 +95,7 @@ export default function RootNavigator() {
         <Stack.Screen name="ArchivedChats" component={() => <Shell title="Archived chats" />} />
         <Stack.Screen name="InviteFriend" component={() => <Shell title="Invite a friend" />} />
         <Stack.Screen name="ContactInfo" component={() => <Shell title="Contact info" />} />
+        <Stack.Screen name="Search" component={() => <Shell title="Search" />} />
         <Stack.Screen name="VoiceCall" component={() => <Shell title="Voice call" subtitle="Mock call UI" />} />
         <Stack.Screen name="VideoCall" component={() => <Shell title="Video call" subtitle="Mock call UI" />} />
         <Stack.Screen name="Placeholder" component={PlaceholderScreen} />
