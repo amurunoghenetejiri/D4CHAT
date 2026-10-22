@@ -30,14 +30,10 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      # ubuntu-latest already includes Android SDK — do not use
-      # android-actions/setup-android (fails looking for removed "tools" package)
       - name: Configure Android SDK path
         run: |
           echo "ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}" >> "$GITHUB_ENV"
           echo "ANDROID_SDK_ROOT=${ANDROID_HOME:-/usr/local/lib/android/sdk}" >> "$GITHUB_ENV"
-          echo "SDK at: ${ANDROID_HOME:-/usr/local/lib/android/sdk}"
-          ls "${ANDROID_HOME:-/usr/local/lib/android/sdk}" || true
 
       - name: Accept Android licenses
         run: |
@@ -49,8 +45,12 @@ jobs:
       - name: Install npm dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Align native modules with Expo SDK
+        run: |
+          npx expo install react-native-safe-area-context react-native-screens expo-linear-gradient expo-status-bar --fix
+
       - name: Generate native Android project
-        run: npx expo prebuild --platform android --non-interactive --no-install
+        run: npx expo prebuild --platform android --non-interactive --no-install --clean
         env:
           CI: "1"
           EXPO_NO_TELEMETRY: "1"
@@ -59,7 +59,6 @@ jobs:
         run: |
           SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
           echo "sdk.dir=$SDK" > android/local.properties
-          cat android/local.properties
 
       - name: Build debug APK
         working-directory: android
@@ -70,7 +69,6 @@ jobs:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx3g -Dorg.gradle.daemon=false"
 
       - name: Locate APK
-        id: apk
         run: |
           set -e
           APK=$(find android/app/build/outputs/apk -name "*.apk" | head -n 1)
