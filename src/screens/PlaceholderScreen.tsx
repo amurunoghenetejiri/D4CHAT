@@ -1,95 +1,38 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { colors } from '../theme/colors';
-import { StatusBarPlaceholder } from '../components/StatusBarPlaceholder';
 
-type Props = { title: string; subtitle?: string };
+type Props = { title?: string; subtitle?: string; route?: { params?: { title?: string } } };
 
-export default function PlaceholderScreen({ title, subtitle }: Props) {
+export default function PlaceholderScreen({ title, subtitle, route }: Props) {
   const navigation = useNavigation();
-  const canGoBack = navigation.canGoBack();
-
+  const t = title || route?.params?.title || 'Page';
   return (
-    <View style={styles.container}>
-      <StatusBarPlaceholder />
+    <SafeAreaView style={styles.root} edges={['top']}>
+      <StatusBar style="dark" />
       <View style={styles.header}>
-        {canGoBack ? (
-          <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12}>
-            <Ionicons name="arrow-back" size={22} color={colors.primaryText} />
-          </TouchableOpacity>
-        ) : (
-          <View style={{ width: 22 }} />
-        )}
-        <Text style={styles.headerTitle} numberOfLines={1}>
-          {title}
-        </Text>
-        <View style={{ width: 22 }} />
+        <Pressable onPress={() => navigation.goBack()} hitSlop={12}>
+          <Ionicons name="arrow-back" size={24} color={colors.primary} />
+        </Pressable>
+        <Text style={styles.headerTitle}>{t}</Text>
       </View>
       <View style={styles.center}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.sub}>
-          {subtitle ?? 'UI shell matching Figma. Full layout coming next.'}
-        </Text>
-        {canGoBack && (
-          <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => navigation.goBack()}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.backBtnText}>Go back</Text>
-          </TouchableOpacity>
-        )}
+        <Text style={styles.title}>{t}</Text>
+        <Text style={styles.sub}>{subtitle ?? 'Mock UI — offline only.'}</Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.white },
-  header: {
-    height: 56,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    gap: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  headerTitle: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.primaryText,
-  },
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.primaryText,
-    marginBottom: 8,
-  },
-  sub: {
-    fontSize: 14,
-    color: colors.secondaryText,
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  backBtn: {
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 100,
-    backgroundColor: colors.sentBubble,
-  },
-  backBtnText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: colors.accent,
-  },
+  root: { flex: 1, backgroundColor: colors.white },
+  header: { flexDirection: 'row', alignItems: 'center', gap: 14, padding: 16 },
+  headerTitle: { fontSize: 18, fontWeight: '600', color: colors.primary },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
+  title: { fontSize: 22, fontWeight: '700', color: colors.primary, marginBottom: 8 },
+  sub: { fontSize: 14, color: colors.muted, textAlign: 'center' },
 });

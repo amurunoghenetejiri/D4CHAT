@@ -21,11 +21,15 @@ export type RootStackParamList = {
   LinkedDevices: undefined;
   Account: undefined;
   Placeholder: { title: string };
+  EditProfile: undefined;
+  PrivacySecurity: undefined;
+  CreateGroup: undefined;
+  ArchivedChats: undefined;
 };
 
 export type MainTabParamList = {
   Chats: undefined;
-  Updates: undefined;
+  Moments: undefined;
   Calls: undefined;
   Settings: undefined;
 };
