@@ -25,7 +25,7 @@ export type Message = {
   isPhoto?: boolean;
 };
 
-/** Logged-in user (mock) — used for You / Message yourself */
+/** Logged-in user (mock) — used for "You" / Message yourself */
 export const CURRENT_USER = {
   id: 'you',
   name: 'Destiny',
@@ -46,10 +46,10 @@ export const MOCK_CHATS: ChatPreview[] = [
     pinned: true,
     phone: CURRENT_USER.phone,
   },
-  { id: '1', name: 'Maya Patel', lastMessage: 'Perfect! See you at 10 ☕', time: '9:41 AM', unread: 2, pinned: true },
+  { id: '1', name: 'Maya Patel', lastMessage: 'Perfect! See you at 10 \u2615', time: '9:41 AM', unread: 2, pinned: true },
   { id: '2', name: 'Weekend crew', lastMessage: "Alex: Who's up for a hike on Sunday?", time: '9:32 AM', unread: 5, pinned: true, isGroup: true, groupIcon: 'people' },
-  { id: '3', name: 'Alex Morgan', lastMessage: 'typing…', time: '9:28 AM', unread: 1, isTyping: true },
-  { id: '4', name: 'Mom', lastMessage: "Don't forget your umbrella ❤️", time: '8:56 AM', unread: 0 },
+  { id: '3', name: 'Alex Morgan', lastMessage: 'typing\u2026', time: '9:28 AM', unread: 1, isTyping: true },
+  { id: '4', name: 'Mom', lastMessage: "Don't forget your umbrella \u2764\ufe0f", time: '8:56 AM', unread: 0 },
   { id: '5', name: 'Coffee & co.', lastMessage: 'You: That place looks amazing!', time: 'Yesterday', unread: 0, isGroup: true, groupIcon: 'coffee', isSent: true },
   { id: '6', name: 'Daniel Kim', lastMessage: 'Thanks for sending these over!', time: 'Yesterday', unread: 0, isSent: true },
   { id: '7', name: 'Sophie Chen', lastMessage: 'Photo', time: 'Yesterday', unread: 0, isPhoto: true },
@@ -58,12 +58,18 @@ export const MOCK_CHATS: ChatPreview[] = [
 export const MOCK_MESSAGES: Message[] = [
   { id: 'm1', text: 'Hey! Are we still on for coffee?', time: '9:20 AM', fromMe: false },
   { id: 'm2', text: 'Yes! The place near the park?', time: '9:22 AM', fromMe: true, status: 'read' },
-  { id: 'm3', text: 'Perfect! See you at 10 ☕', time: '9:41 AM', fromMe: false },
+  { id: 'm3', text: 'Perfect! See you at 10 \u2615', time: '9:41 AM', fromMe: false },
 ];
 
 export const SELF_MESSAGES: Message[] = [
-  { id: 's1', text: 'Notes to myself 📝', time: 'Yesterday', fromMe: true, status: 'read' },
-  { id: 's2', text: 'Save important info here. Messages you send here also show a notification so you can test alerts.', time: 'Yesterday', fromMe: true, status: 'read' },
+  { id: 's1', text: 'Notes to myself \ud83d\udcdd', time: 'Yesterday', fromMe: true, status: 'read' },
+  {
+    id: 's2',
+    text: 'Save important info here. Messages you send here also show a notification so you can test alerts.',
+    time: 'Yesterday',
+    fromMe: true,
+    status: 'read',
+  },
 ];
 
 export const chats = MOCK_CHATS;
