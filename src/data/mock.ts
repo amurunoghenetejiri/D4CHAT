@@ -12,13 +12,6 @@ export type ChatPreview = {
   groupIcon?: 'coffee' | 'people';
 };
 
-export type Chat = ChatPreview & {
-  archived?: boolean;
-  avatarColor?: string;
-  initial?: string;
-  typing?: boolean;
-};
-
 export type Message = {
   id: string;
   text: string;
@@ -27,6 +20,7 @@ export type Message = {
   status?: 'sent' | 'delivered' | 'read';
   type?: 'text' | 'voice' | 'image' | 'doc';
   duration?: string;
+  isPhoto?: boolean;
 };
 
 export const MOCK_CHATS: ChatPreview[] = [
@@ -39,26 +33,14 @@ export const MOCK_CHATS: ChatPreview[] = [
   { id: '7', name: 'Sophie Chen', lastMessage: 'Photo', time: 'Yesterday', unread: 0, isPhoto: true },
 ];
 
-export const chats: Chat[] = MOCK_CHATS.map((c) => ({
-  ...c,
-  initial: c.name[0],
-  typing: c.isTyping,
-}));
-
-export const archivedChats: Chat[] = [
-  { id: 'a1', name: 'Old project team', lastMessage: 'Final files attached', time: 'Mon', unread: 0, isGroup: true, archived: true },
-  { id: 'a2', name: 'Landlord', lastMessage: 'Rent received, thank you', time: 'Sun', unread: 0, archived: true, initial: 'L' },
+export const MOCK_MESSAGES: Message[] = [
+  { id: 'm1', text: 'Hey! Are we still on for coffee?', time: '9:20 AM', fromMe: false },
+  { id: 'm2', text: 'Yes! The place near the park?', time: '9:22 AM', fromMe: true, status: 'read' },
+  { id: 'm3', text: 'Perfect! See you at 10 \u2615', time: '9:41 AM', fromMe: false },
 ];
 
-export const messagesByChat: Record<string, Message[]> = {
-  '1': [
-    { id: 'm1', text: 'Hey! Are we still on for coffee?', time: '9:20 AM', fromMe: false },
-    { id: 'm2', text: 'Yes! The place near the park?', time: '9:22 AM', fromMe: true, status: 'read' },
-    { id: 'm3', text: 'Perfect! See you at 10 \u2615', time: '9:41 AM', fromMe: false },
-  ],
-  '2': [{ id: 'm1', text: "Who's up for a hike on Sunday?", time: '9:32 AM', fromMe: false }],
-  '3': [{ id: 'm1', text: 'Can you send the deck?', time: '9:15 AM', fromMe: false }],
-};
+export const chats = MOCK_CHATS;
+export const messagesByChat: Record<string, Message[]> = { '1': MOCK_MESSAGES };
 
 export const statuses = [
   { id: 's1', name: 'My status', time: 'Tap to add', isMe: true },
@@ -77,6 +59,4 @@ export const contacts = [
   { id: '1', name: 'Maya Patel', status: 'Available' },
   { id: '3', name: 'Alex Morgan', status: 'At work' },
   { id: '4', name: 'Mom', status: 'Hey there! I am using d4chat' },
-  { id: '6', name: 'Daniel Kim', status: 'Busy' },
-  { id: '7', name: 'Sophie Chen', status: 'In a meeting' },
 ];

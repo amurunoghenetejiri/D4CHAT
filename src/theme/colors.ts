@@ -6,6 +6,7 @@ export const colors = {
   mutedText: '#78817c',
   secondaryText: '#727c80',
   accent: '#1b3fc2',
+  accentIndigo: '#4f46e5',
   gradientStart: '#00e5ff',
   gradientMid: '#3b82f6',
   gradientEnd: '#4c1d95',
@@ -20,13 +21,17 @@ export const colors = {
   bubbleOut: '#dbeafe',
   bubbleIn: '#ffffff',
   sentBubble: '#dbeafe',
+  receivedBubble: '#ffffff',
   danger: '#e11d48',
+  error: '#e11d48',
   border: '#e8ebe9',
   borderChat: '#e8ebe9',
   tabInactive: '#9aa3a0',
   homeIndicator: '#17231e',
   groupAvatarGreen: '#ddece4',
   groupAvatarCoffee: '#e8dbcb',
+  encryptionBg: 'rgba(255, 249, 196, 0.9)',
+  encryptionText: '#5c6b4a',
 };
 
 export const radii = {
