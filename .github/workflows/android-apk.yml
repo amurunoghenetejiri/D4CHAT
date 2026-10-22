@@ -39,17 +39,11 @@ jobs:
             || yes | "$SDK/cmdline-tools/16.0/bin/sdkmanager" --licenses >/dev/null 2>&1 \
             || true
 
-      - name: Expand full UI sources
+      - name: Assemble exact logo
         run: |
-          if [ -f scripts/src.zip.b64 ]; then
-            python3 - <<'PY'
-          import base64, zipfile, io
-          from pathlib import Path
-          data = base64.b64decode(Path("scripts/src.zip.b64").read_text())
-          with zipfile.ZipFile(io.BytesIO(data)) as z:
-              z.extractall(".")
-          print("extracted UI sources")
-          PY
+          if ls scripts/logo_exact.b64.p* >/dev/null 2>&1; then
+            cat scripts/logo_exact.b64.p* > scripts/logo_exact.b64
+            echo "logo b64 assembled"
           fi
 
       - name: Generate icons from logo
