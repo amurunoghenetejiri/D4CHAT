@@ -2,7 +2,7 @@
   "expo": {
     "name": "D4CHAT",
     "slug": "D4CHAT",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,11 +18,11 @@
     },
     "android": {
       "package": "com.d4chat.app",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
-        "backgroundColor": "#00E5FF"
+        "backgroundColor": "#000000"
       },
       "permissions": [],
       "softwareKeyboardLayoutMode": "pan"
