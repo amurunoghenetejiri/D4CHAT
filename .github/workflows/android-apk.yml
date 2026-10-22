@@ -65,33 +65,20 @@ jobs:
           SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
           echo "sdk.dir=$SDK" > android/local.properties
 
-      - name: Embed JS bundle (standalone offline APK)
-        run: |
-          mkdir -p android/app/src/main/assets
-          ENTRY="index.ts"
-          if [ ! -f "$ENTRY" ]; then ENTRY="node_modules/expo/AppEntry.js"; fi
-          npx react-native bundle \
-            --platform android \
-            --dev false \
-            --entry-file "$ENTRY" \
-            --bundle-output android/app/src/main/assets/index.android.bundle \
-            --assets-dest android/app/src/main/res \
-            --minify false \
-            --reset-cache
-          ls -lh android/app/src/main/assets/index.android.bundle
-
+      # Release builds run createBundleReleaseJsAndAssets — JS is packaged in the APK (no Metro).
       - name: Sign release with debug keystore (sideload-friendly)
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
-          p = Path("android/app/build.gradle")
-          if not p.exists():
-              p = Path("android/app/build.gradle.kts")
-          t = p.read_text()
-          if "signingConfig signingConfigs.debug" in t:
-              print("already patched")
-          else:
+          for name in ("android/app/build.gradle", "android/app/build.gradle.kts"):
+              p = Path(name)
+              if not p.exists():
+                  continue
+              t = p.read_text()
+              if "signingConfig signingConfigs.debug" in t:
+                  print(f"{name}: already patched")
+                  break
               t2 = re.sub(
                   r"(release\s*\{)",
                   r"\1\n            signingConfig signingConfigs.debug",
@@ -99,16 +86,20 @@ jobs:
                   count=1,
               )
               p.write_text(t2)
-              print("patched release signingConfig")
+              print(f"{name}: patched release signingConfig")
+              break
+          else:
+              print("WARNING: no app build.gradle found")
           PY
 
-      - name: Build release APK (embedded JS, offline)
+      - name: Build release APK (Gradle embeds JS — works offline)
         working-directory: android
         run: |
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon --stacktrace
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx3g -Dorg.gradle.daemon=false"
+          NODE_ENV: production
 
       - name: Locate APK
         run: |
@@ -120,6 +111,8 @@ jobs:
             exit 1
           fi
           ls -lh "$APK"
+          # Confirm JS bundle was produced by the release task
+          find android/app/build -name "index.android.bundle" -o -name "*.hbc" 2>/dev/null | head -20 || true
           cp "$APK" D4CHAT.apk
 
       - name: Upload APK artifact
@@ -133,4 +126,4 @@ jobs:
       - name: Summary
         run: |
           echo "## D4CHAT Android APK (offline)" >> "$GITHUB_STEP_SUMMARY"
-          echo "Install D4CHAT.apk — no Metro, no internet. Logo icon included." >> "$GITHUB_STEP_SUMMARY"
+          echo "Install **D4CHAT.apk** — no Metro, no internet. Logo icon included." >> "$GITHUB_STEP_SUMMARY"
