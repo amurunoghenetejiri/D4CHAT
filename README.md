@@ -1,61 +1,62 @@
 # D4CHAT
 
-Private messaging UI built from the official Figma design  
-**File:** [Figma – D4CHAT](https://www.figma.com/design/6Dq457z8WQkOP01MNVWQz8/Untitled)
+Private messaging **UI** from the [Figma design](https://www.figma.com/design/6Dq457z8WQkOP01MNVWQz8/Untitled).
 
-> **Native Android & iOS** via [Expo](https://expo.dev) + React Native (TypeScript).  
-> One codebase → real native apps.
+**Native Android & iOS** · **Fully offline** · Expo + React Native (TypeScript)
 
-## Status
+> Mock data only. No backend, no real SMS/OTP, no production encryption.
 
-- Figma design inspected (28 top-level frames).
-- Auth flow + Chats list + Conversation implemented to match design tokens.
-- Remaining screens (Updates, Calls, Settings sub-pages, groups, status, active calls, etc.) are scaffolded as placeholders and will be filled from Figma next.
-- **Mock data only.** No backend, database, real OTP, push, or production encryption.
+## Fully offline
 
-## Design tokens (from Figma)
+- All screens and navigation (Splash → Welcome → Phone → Verify → Profile → Chats / Updates / Calls / Settings → Conversation) run **without internet**.
+- Chat list, messages, status, calls, and settings use local mock data only.
+- No API calls on startup or while navigating.
 
-| Token | Value |
-|-------|-------|
-| Primary text | `#17231e` |
-| Secondary | `#727c80` |
-| Accent | `#1b3fc2` / `#4f46e5` |
-| Brand gradient | `#00e5ff` → `#3b82f6` → `#4c1d95` |
-| Chat background | `#f2ede4` |
-| Sent bubble | `#e3edff` |
-| Font | System / Inter |
+## Install on your Android phone
 
-## Run
+### Option A — Download APK from GitHub Actions (recommended)
+
+1. Open **Actions**: https://github.com/amurunoghenetejiri/D4CHAT/actions  
+2. Open the latest **Build Android APK** run (green check).  
+3. Download the **D4CHAT-android** artifact and unzip it.  
+4. Copy the `.apk` to your phone and open it to install.  
+   - You may need: **Settings → Security → Allow install from unknown sources**.  
+5. Open **D4CHAT** — works offline from splash to every screen.
+
+Trigger a new build anytime: **Actions → Build Android APK → Run workflow**.
+
+### Option B — Build on your machine
 
 ```bash
+git clone https://github.com/amurunoghenetejiri/D4CHAT.git
 cd D4CHAT
+npm install
+npx expo prebuild --platform android
+cd android && ./gradlew assembleDebug
+```
+
+APK path: `android/app/build/outputs/apk/debug/app-debug.apk`
+
+### Option C — Expo Go (dev)
+
+```bash
 npm install
 npx expo start
 ```
 
-Then press `a` for Android emulator / device, or `i` for iOS simulator.
+## Navigation map (all offline)
 
-### Build native binaries
-
-```bash
-# Android APK / AAB
-npx expo run:android
-
-# iOS (macOS only)
-npx expo run:ios
-```
-
-Or use EAS Build:
-
-```bash
-npx eas build --platform android
-npx eas build --platform ios
-```
-
-## Important disclaimers
-
-- Messaging, OTP, voice/video calls, and encryption are **UI mocks only**.
-- Not production-ready for real communication.
+| Screen | Actions |
+|--------|--------|
+| Splash | Auto → Welcome |
+| Welcome | Get started → Phone number |
+| Phone number | Continue → Verify · Back |
+| Verify code | Verify → Profile · Back |
+| Profile setup | Continue → Main tabs |
+| Chats | Row → Conversation · FAB → New chat · Archived |
+| Conversation | Back → Chats |
+| Tabs | Chats / Updates / Calls / Settings |
+| Settings | Rows → Account, Privacy, Notifications, etc. |
 
 ## License
 
